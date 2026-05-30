@@ -1,5 +1,46 @@
+# Compiled output
+/dist
+/build
+/out
+
 # Node
 /node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDEs and editors
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
 
 # Miscellaneous
 /coverage
+/logs
+*.log
+
+# Jest
+/jest-report
+/test-results
+
+# ESLint cache
+.eslintcache
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Runtime
+pids
+*.pid
+*.seed
+*.pid.lock
