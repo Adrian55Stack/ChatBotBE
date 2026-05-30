@@ -16,10 +16,8 @@ jobs:
 
       - name: Install BE dependencies
         run: npm install
-        working-directory: ChatBotBE
 
       - name: Run BE tests with coverage
         run: npm run test
-        working-directory: ChatBotBE
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
