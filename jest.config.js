@@ -1,7 +1,7 @@
 export default {
     "testEnvironment": "node",
     "collectCoverageFrom": [
-        "src/**/*.js",
+        "src/**/*.ts",
         "!tests/**/*.test.js"
     ],
     "coverageReporters": [
