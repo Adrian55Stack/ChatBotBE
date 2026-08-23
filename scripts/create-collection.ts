@@ -1,14 +1,11 @@
-import { QdrantClient } from "@qdrant/js-client-rest";
-
-const qdrant = new QdrantClient({
-  url: "http://localhost:6333",
-});
+import { vectorsSize } from "../src/config/ollama";
+import { COLLECTION, qdrant } from "../src/config/qdrant";
 
 async function ensureCollection() {
   const collections = await qdrant.getCollections();
 
   const exists = collections.collections.some(
-    (c) => c.name === "mythology"
+    (c) => c.name === COLLECTION
   );
 
   if (exists) {
@@ -16,9 +13,9 @@ async function ensureCollection() {
     return;
   }
 
-  await qdrant.createCollection("mythology", {
+  await qdrant.createCollection(COLLECTION, {
     vectors: {
-      size: 768, // IMPORTANT: must match Ollama embedding model
+      size: vectorsSize, 
       distance: "Cosine",
     },
   });

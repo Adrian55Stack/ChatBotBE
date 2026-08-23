@@ -1,11 +1,14 @@
+import { embeddingsAPI, embeddingsModel } from "../src/config/ollama";
+import { COLLECTION, qdrant } from "../src/config/qdrant";
+
 const query = "Who killed Jormungandr?";
 
 const embed = async (text: string) => {
-  const res = await fetch("http://localhost:11434/api/embeddings", {
+  const res = await fetch(embeddingsAPI, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "nomic-embed-text",
+      model: embeddingsModel,
       prompt: text,
     }),
   });
@@ -13,13 +16,9 @@ const embed = async (text: string) => {
   return (await res.json()).embedding;
 };
 
-const qdrant = new (await import("@qdrant/js-client-rest")).QdrantClient({
-  url: "http://localhost:6333",
-});
-
 const vector = await embed(query);
 
-const result = await qdrant.search("mythology", {
+const result = await qdrant.search(COLLECTION, {
   vector,
   limit: 3,
 });

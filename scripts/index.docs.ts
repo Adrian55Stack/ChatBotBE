@@ -2,20 +2,15 @@
 
 import fs from 'fs';
 import path from 'path';
-import { QdrantClient } from '@qdrant/js-client-rest';
-
-const qdrant = new QdrantClient({
-  url: 'http://localhost:6333'
-});
-
-const COLLECTION = 'mythology';
+import { COLLECTION, qdrant } from '../src/config/qdrant';
+import { embeddingsAPI, embeddingsModel } from '../src/config/ollama';
 
 export async function embed(text: string): Promise<number[]> {
-  const res = await fetch("http://localhost:11434/api/embeddings", {
+  const res = await fetch(embeddingsAPI, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "nomic-embed-text",
+      model: embeddingsModel,
       prompt: text
     })
   });
