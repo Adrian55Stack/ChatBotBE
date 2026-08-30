@@ -1,7 +1,7 @@
-import { qdrant, COLLECTION } from "../config/qdrant.ts";
-import {embed} from '../utils/embed.ts';
+import { qdrant, COLLECTION } from "../config/qdrant.js";
+import {embed} from './embed.js';
 
-export async function searchMythology(question: string) {
+export async function searchMythology(question) {
   const vector = await embed(question);
 
   const result = await qdrant.search(COLLECTION, {

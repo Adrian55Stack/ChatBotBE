@@ -1,5 +1,5 @@
-import {searchMythology} from '../utils/searchMythology.ts';
-import {askGroq} from '../utils/askGroq.ts';
+import {searchMythology} from '../utils/searchMythology.js';
+import {askGroq} from '../utils/askGroq.js';
 
 export const sendMessage = async (req, res) => {
     try {
