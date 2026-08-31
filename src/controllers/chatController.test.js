@@ -1,23 +1,85 @@
-import request from 'supertest';
-import app from '../../server.js';
+// sendMessage.test.js
+import { sendMessage } from '../controllers/chatController.js';
+import { searchMythology } from '../utils/searchMythology.js';
+import { askGroq } from '../utils/askGroq.js';
 
-describe('POST /api/chat', () => {
-    it('should return a valid response', async () => {
-        const godName = 'Odin';
-        const res = await request(app)
-            .post('/api/chat')
-            .send({ question: `Provide details about ${godName}` });
+jest.mock('../utils/searchMythology.js', () => ({
+  searchMythology: jest.fn(),
+}));
 
-        expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('answer');
-        expect(res.body.answer.includes(godName)).toBe(true);
-    }, 10000);
+jest.mock('../utils/askGroq.js', () => ({
+  askGroq: jest.fn(),
+}));
 
-    it('should return 500 on error', async () => {
-        const res = await request(app)
-            .post('/api/chat')
-            .send({});
+describe('sendMessage', () => {
+  let req, res, consoleErrorSpy;
 
-        expect(res.status).toBe(500);
+  beforeEach(() => {
+    req = { body: { question: 'Who is Zeus?' } };
+    res = {
+      json: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+    };
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('returns question, answer, and contextUsed on success', async () => {
+    searchMythology.mockResolvedValueOnce('Zeus is the king of the gods.');
+    askGroq.mockResolvedValueOnce('Zeus rules Mount Olympus.');
+
+    await sendMessage(req, res);
+
+    expect(searchMythology).toHaveBeenCalledWith('Who is Zeus?');
+    expect(askGroq).toHaveBeenCalledWith(
+      'Zeus is the king of the gods.',
+      'Who is Zeus?'
+    );
+    expect(res.json).toHaveBeenCalledWith({
+      question: 'Who is Zeus?',
+      answer: 'Zeus rules Mount Olympus.',
+      contextUsed: 'Zeus is the king of the gods.',
     });
+    expect(res.status).not.toHaveBeenCalled();
+  });
+
+  it('returns 500 and error message when searchMythology fails', async () => {
+    searchMythology.mockRejectedValueOnce(new Error('Qdrant unavailable'));
+
+    await sendMessage(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Chat failed' });
+    expect(askGroq).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+  });
+
+  it('returns 500 and error message when askGroq fails', async () => {
+    searchMythology.mockResolvedValueOnce('Some context.');
+    askGroq.mockRejectedValueOnce(new Error('Groq API failed'));
+
+    await sendMessage(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Chat failed' });
+    expect(consoleErrorSpy).toHaveBeenCalled();
+  });
+
+  it('handles a missing question in the request body', async () => {
+    req.body = {};
+    searchMythology.mockResolvedValueOnce('');
+    askGroq.mockResolvedValueOnce('I need a question to answer.');
+
+    await sendMessage(req, res);
+
+    expect(searchMythology).toHaveBeenCalledWith(undefined);
+    expect(res.json).toHaveBeenCalledWith({
+      question: undefined,
+      answer: 'I need a question to answer.',
+      contextUsed: '',
+    });
+  });
 });
