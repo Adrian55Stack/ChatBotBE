@@ -2,7 +2,7 @@ import express, { json } from 'express';
 import 'dotenv/config';
 import cors from 'cors';
 
-import chatRoutes from './src/routes/chatRoutes.ts'
+import chatRoutes from './src/routes/chatRoutes.js'
 
 const app = express();
 app.disable("x-powered-by");

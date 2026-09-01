@@ -1,7 +1,7 @@
 // scripts/index-docs.ts
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { COLLECTION, qdrant } from '../src/config/qdrant';
 import { embeddingsAPI, embeddingsModel } from '../src/config/ollama';
 
@@ -69,16 +69,13 @@ async function walk(dir: string): Promise<string[]> {
   return files;
 }
 
-async function main() {
-  const files = await walk('./mythology');
 
-  let id = 1;
+const files = await walk('./mythology');
 
-  for (const file of files) {
-    await indexFile(file, id++);
-  }
+let id = 1;
 
-  console.log(`Done. Indexed ${files.length} files.`);
+for (const file of files) {
+  await indexFile(file, id++);
 }
 
-main().catch(console.error);
+console.log(`Done. Indexed ${files.length} files.`);

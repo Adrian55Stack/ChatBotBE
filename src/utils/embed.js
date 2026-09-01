@@ -1,6 +1,6 @@
-import { embeddingsAPI, embeddingsModel } from "../config/ollama.ts";
+import { embeddingsAPI, embeddingsModel } from "../config/ollama.js";
 
-export async function embed(text: string) {
+export async function embed(text) {
   const res = await fetch(embeddingsAPI, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

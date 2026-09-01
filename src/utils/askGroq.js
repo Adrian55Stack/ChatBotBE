@@ -1,6 +1,6 @@
-import { groqAPI, groqModel, systemPrompt } from "../config/groq.ts";
+import { groqAPI, groqModel, systemPrompt } from "../config/groq.js";
 
-export async function askGroq(context: string, question: string) {
+export async function askGroq(context, question) {
   const res = await fetch(groqAPI, {
     method: "POST",
     headers: {

@@ -1,8 +1,8 @@
 export default {
     "testEnvironment": "node",
     "collectCoverageFrom": [
-        "src/**/*.ts",
-        "!tests/**/*.test.js"
+        "src/**/*.js",
+        '!src/config/**',
     ],
     "coverageReporters": [
         "lcov",
