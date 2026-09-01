@@ -2,7 +2,7 @@ export default {
     "testEnvironment": "node",
     "collectCoverageFrom": [
         "src/**/*.js",
-        "!tests/**/*.test.js"
+        '!src/config/**',
     ],
     "coverageReporters": [
         "lcov",
