@@ -1,17 +1,20 @@
-import {searchMythology} from '../utils/searchMythology.js';
-import {askGroq} from '../utils/askGroq.js';
+import { searchMythology } from '../utils/searchMythology.js';
+import { askGroq } from '../utils/askGroq.js';
+import { translateString } from '../utils/translateString.js';
 
 export const sendMessage = async (req, res) => {
-    try {
+  try {
     const question = req.body.question;
 
     const context = await searchMythology(question);
 
     const answer = await askGroq(context, question);
 
+    const [translatedAnswer] = await translateString(answer, req.body.detected_language);
+
     res.json({
       question,
-      answer,
+      answer: translatedAnswer,
       contextUsed: context,
     });
   } catch (err) {
@@ -19,4 +22,3 @@ export const sendMessage = async (req, res) => {
     res.status(500).json({ error: "Chat failed" });
   }
 };
-

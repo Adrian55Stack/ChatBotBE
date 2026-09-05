@@ -8,6 +8,10 @@ jest.mock('../controllers/chatController.js', () => ({
   sendMessage: jest.fn((req, res) => res.status(200).json({ mocked: true })),
 }));
 
+jest.mock('../utils/translateString.js', () => ({
+  translateString: jest.fn((question, target_lang) =>['Who is Zeus?', 'EN'])
+}));
+
 describe('chatRoutes', () => {
   let app;
 
