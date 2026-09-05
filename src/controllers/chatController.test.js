@@ -2,6 +2,7 @@
 import { sendMessage } from '../controllers/chatController.js';
 import { searchMythology } from '../utils/searchMythology.js';
 import { askGroq } from '../utils/askGroq.js';
+import { translateString } from '../utils/translateString.js';
 
 jest.mock('../utils/searchMythology.js', () => ({
   searchMythology: jest.fn(),
@@ -9,6 +10,10 @@ jest.mock('../utils/searchMythology.js', () => ({
 
 jest.mock('../utils/askGroq.js', () => ({
   askGroq: jest.fn(),
+}));
+
+jest.mock('../utils/translateString.js', () => ({
+  translateString: jest.fn(),
 }));
 
 describe('sendMessage', () => {
@@ -30,6 +35,7 @@ describe('sendMessage', () => {
   it('returns question, answer, and contextUsed on success', async () => {
     searchMythology.mockResolvedValueOnce('Zeus is the king of the gods.');
     askGroq.mockResolvedValueOnce('Zeus rules Mount Olympus.');
+    translateString.mockResolvedValueOnce(['Zeus rules Mount Olympus.', 'EN']);
 
     await sendMessage(req, res);
 
@@ -72,6 +78,7 @@ describe('sendMessage', () => {
     req.body = {};
     searchMythology.mockResolvedValueOnce('');
     askGroq.mockResolvedValueOnce('I need a question to answer.');
+    translateString.mockResolvedValueOnce(['I need a question to answer.', 'EN'])
 
     await sendMessage(req, res);
 

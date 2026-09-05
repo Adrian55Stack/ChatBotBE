@@ -14,7 +14,7 @@ export const sendMessage = async (req, res) => {
 
     res.json({
       question,
-      translatedAnswer,
+      answer: translatedAnswer,
       contextUsed: context,
     });
   } catch (err) {
